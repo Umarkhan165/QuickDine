@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import { Error } from "mongoose";
 import resturantRouter from "./routes/resturantroutes.js";
+import bookingRouter from "./routes/bookingRoutes.js";
 
 const app = express();
 // Connect to MongoDB
@@ -21,6 +22,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 app.use("/api/auth", authRouter)
 app.use("/api/resturants", resturantRouter)
+app.use("/api/bookings", bookingRouter)
 // Express error-handling middleware must have four parameters: (err, req, res, next)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Unhandled Error:", err);
