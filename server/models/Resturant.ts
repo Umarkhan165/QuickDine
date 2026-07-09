@@ -11,6 +11,8 @@ export interface IResturant extends Document {
   reviewCount: number;
   location: string;
   address: string;
+  phone: string;
+  openingHours: string;
   image: string;
   chef: string;
   tags: string[];
@@ -72,6 +74,12 @@ const ResturantSchema = new Schema<IResturant>(
       type: String,
       required: true,
       trim: true,
+    },
+    phone: {
+      type: String,
+    },
+    openingHours: {
+      type: String,
     },
     image: {
       type: String,
