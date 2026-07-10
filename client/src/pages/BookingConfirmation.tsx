@@ -10,7 +10,7 @@ import Loader from "../components/Loader.tsx";
 import BookingSuccess from "../components/booking/BookingSuccess.tsx";
 import BookingSummary from "../components/booking/BookingSummary.tsx";
 import BookingForm from "../components/booking/BookingForm.tsx";
-import { dummyBookingData, dummyRestaurant } from "../assets/assets.ts";
+import api from "../lib/api.ts";
 
 export default function BookingConfirmation() {
     const { slug } = useParams<{ slug: string }>();
@@ -48,19 +48,24 @@ export default function BookingConfirmation() {
 
     useEffect(() => {
         const fetchRestaurant = async () => {
-            setRestaurant(dummyRestaurant.find((r) => r.slug === slug));
-            setLoading(false);
+            try {
+                setLoading(true)
+                const res = await api.get(`/resturants/${slug}`)
+                setRestaurant(res.data.data ?? null) // FIX
+            } catch (error: any) {
+                toast.error(error?.response?.data?.message || error?.message);
+            } finally {
+                setLoading(false)
+            }
         };
 
         if (slug) {
             fetchRestaurant();
         }
     }, [slug, navigate]);
-
     if (loading) {
-        return <Loader text="Retrieving Dining Details..." />;
+        return <Loader text="Loading Booking Details..." />;
     }
-
     if (!restaurant) return null;
 
     const handleConfirmSubmit = async (e: React.FormEvent) => {
@@ -73,7 +78,15 @@ export default function BookingConfirmation() {
 
         try {
             setConfirming(true);
-            setConfirmedBooking(dummyBookingData);
+            const res = await api.post(`/bookings`, {
+                resturantid: restaurant._id, // FIX: field name + variable name
+                date: new Date(date),
+                time: slot,                   // FIX: field name
+                guests,
+                occasion,
+                specialRequests
+            })
+            setConfirmedBooking(res.data.data); // FIX
             toast.success("Reservation confirmed!");
         } catch (error: any) {
             toast.error(error?.response?.data?.message || error?.message);

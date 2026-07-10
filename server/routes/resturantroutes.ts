@@ -11,6 +11,6 @@ const resturantRouter = Router();
 resturantRouter.get("/", getResturants);
 resturantRouter.get("/featured", getFeaturedResturants);
 resturantRouter.get("/:slug", getResturantBySlug);
-resturantRouter.get("/:id/avaliability", getResturantAvailability);
+resturantRouter.get("/:id/availability", getResturantAvailability);
 
 export default resturantRouter;

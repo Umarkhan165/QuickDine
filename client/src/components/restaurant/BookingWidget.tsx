@@ -100,7 +100,7 @@ export default function BookingWidget({
                             })().map((slotInfo: any) => {
                                 const slot = slotInfo.time;
                                 const isSelected = selectedSlot === slot;
-                                const isFull = !slotInfo.isAvailable || slotInfo.availableSeats < Number(selectedGuests);
+                                const isFull = !slotInfo.isAvailable || slotInfo.avaliableSeats < Number(selectedGuests); // FIX: availableSeats -> avaliableSeats
                                 return (
                                     <button
                                         key={slot}
