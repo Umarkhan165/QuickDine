@@ -85,7 +85,7 @@ export default function RestaurantWizard({ setRestaurant }: RestaurantWizardProp
                 formData.append("image", imageFile);
             }
 
-            const res = await api.post('/owner/resturants', formData, {
+            const res = await api.post('/owner/resturant', formData, {
                 headers:{
                     "Content-Type":"multipart/form-data",
                 }

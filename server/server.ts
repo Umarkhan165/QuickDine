@@ -3,21 +3,17 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
-import { Error } from "mongoose";
 import resturantRouter from "./routes/resturantroutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import ownerRouter from "./routes/ownerRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 
 const app = express();
-// Connect to MongoDB
+
 await connectDB();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
-
-const port = process.env.PORT || 5000;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Server is Live!");
@@ -27,7 +23,7 @@ app.use("/api/resturants", resturantRouter)
 app.use("/api/bookings", bookingRouter)
 app.use("/api/owner", ownerRouter)
 app.use("/api/admin", adminRouter)
-// Express error-handling middleware must have four parameters: (err, req, res, next)
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("Unhandled Error:", err);
   res.status(500).json({
@@ -36,6 +32,13 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+// Only actually bind to a port when running locally — Vercel invokes
+// the exported app directly per-request instead of listening on a port
+if (process.env.VERCEL !== "1") {
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+}
+
+export default app; // FIX: this is what Vercel actually needs to invoke
