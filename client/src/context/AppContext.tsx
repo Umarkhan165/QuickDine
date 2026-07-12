@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../lib/api.js";
 import toast from "react-hot-toast";
-import { Navigate } from "react-router-dom";
 
 interface UserType {
     _id: string;
