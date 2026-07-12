@@ -9,7 +9,6 @@ import { ShieldCheckIcon, CheckCircleIcon, BarChart3Icon } from "lucide-react";
 // Subcomponents
 import AdminApprovals from "../../components/admin/AdminApprovals.tsx";
 import AdminStats from "../../components/admin/AdminStats.tsx";
-import { dummyAdminStats, dummyRestaurant } from "../../assets/assets.ts";
 import api from "../../lib/api.ts";
 import toast from "react-hot-toast";
 
@@ -26,11 +25,11 @@ export default function AdminDashboard() {
             setLoading(true);
             const res = await api.get("/admin/stats");
             setStats(res.data);
-            const resRests = await api.get("/admin/restaurants");
+            const resRests = await api.get("/admin/resturants");
             setRestaurants(resRests.data);
             
         } catch (error) {
-            toast.error("Failed to retreive admin data");
+            toast.error("Failed to retreive admin data");   
         } finally {
             setLoading(false);
         }
@@ -39,9 +38,9 @@ export default function AdminDashboard() {
     const handleApproveStatus = async (restaurantId: string, status: "approved" | "rejected") => {
         try {
             setBtnLoading(restaurantId)
-            const res = await api.put(`/admin/restaurants/${restaurantId}/approve`, {status})
+            await api.put(`/admin/resturants/${restaurantId}/approve`, {status})
             toast.success(`Restaurant has been marked as ${status} successfully!`);
-            const resRests = await api.get("/admin/restaurants");
+            const resRests = await api.get("/admin/resturants");
             setRestaurants(resRests.data);
             const sRes = await api.get("/admin/stats");
             setStats(sRes.data);

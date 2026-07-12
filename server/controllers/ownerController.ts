@@ -19,14 +19,10 @@ const uploadtoCloudinary = (fileBuffer:Buffer) :Promise<{secure_url:string}> => 
 
 // Get Owner's Resturants
 // GET /api/owner/resturant
-export const getOwnerResturants = async (req:AuthRequest, res:Response):Promise<void>=> {
+export const getOwnerResturants = async (req: AuthRequest, res: Response): Promise<void> => {
     try {
-        const resturant = await Resturant.find({ owner: req.user?._id })
-        if(!resturant) {
-            res.status(200).json(null)
-            return
-        }
-        res.json(resturant)
+        const resturant = await Resturant.findOne({ owner: req.user?._id });
+        res.status(200).json(resturant); // null if none exists — frontend's `!restaurant` check handles that correctly
     } catch (error: any) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });
@@ -37,16 +33,16 @@ export const getOwnerResturants = async (req:AuthRequest, res:Response):Promise<
 // POST /api/owner/resturant
 export const createOwnerResturant = async (req:AuthRequest, res:Response):Promise<void>=> {
     try {
-        const existing = await Resturant.find({ owner: req.user?._id })
+        const existing = await Resturant.findOne({ owner: req.user?._id })
         if(existing) {
-            res.status(404).json({ message: "You already have a registered Resturant"})
+            res.status(400).json({ message: "You already have a registered Resturant"})
             return
         }
-        const { name, address, description, tags, priceRange, cuisine, phone, chef,totalSeats, openingHours,avaliableSlots} 
+        const { name, address, description, tags, priceRange, cuisine, phone, chef, totalSeats, openingHours, avaliableSlots, location }
         = req.body;
 
         // Basic validation 
-        if(!name || !address || !description || !priceRange || !cuisine || !phone || !chef || !totalSeats || !openingHours) {
+        if(!name || !address || !description || !priceRange || !cuisine || !phone || !chef || !totalSeats || !openingHours || !location) {
             res.status(400).json({ message: "Missing required fields"})
             return
         }
@@ -79,20 +75,22 @@ export const createOwnerResturant = async (req:AuthRequest, res:Response):Promis
             location,
             phone,
             chef,
-            tags:parsedTags,
+            tags: parsedTags,
+            avaliableSlots: parsedSlots,
             totalSeats: totalSeats ? Number(totalSeats): 20,
             owner: req.user?._id,
             status: "pending",
             image: imageUrl,
         })
 
-        res.status(201).json(resturant)
+        await resturant.save()
+
+        res.status(201).json({ success: true, data: resturant })
     } catch (error: any) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
-
 // Update Owner's Resturant
 // PUT /api/owner/resturant/
 export const updateOwnerResturant = async (req:AuthRequest, res:Response):Promise<void>=> {

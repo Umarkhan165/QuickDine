@@ -65,9 +65,10 @@ const BookingSchema = new Schema<IBookings>(
     }
 )
 // Generate a unique booking ID before saving
-BookingSchema.pre("save", function (this: IBookings, next) {
+BookingSchema.pre("save", function (this: IBookings, next: any) {
     if (!this.bookingId) {
         this.bookingId = `GR-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
     }
+    next();
 });
 export const Booking = model<IBookings>("Booking", BookingSchema);

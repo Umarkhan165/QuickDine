@@ -8,7 +8,7 @@ adminRouter.use(protect)
 adminRouter.use(adminOnly)
 
 
-adminRouter.get("/resturants", getAdminResturants);
+adminRouter.get("/resturants", getAdminResturants);          // "resturants" — no 'a'
 adminRouter.put("/resturants/:id/approve", approveResturant);
 adminRouter.get("/stats", getAdminStats);
 export default adminRouter;

@@ -23,7 +23,7 @@ export default function Dashboard() {
         const fetchBookings = async () => {
             try {
                 setLoadingBookings(true);
-                const res = await api.get("/booking/my");
+                const res = await api.get("/bookings/my");
                 setBookings(res.data.data);
             } catch (error: any) {
                 toast.error(error?.response?.data?.message || error?.message);
@@ -41,7 +41,7 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
-                const res = await api.get("/resturant/featured");
+                const res = await api.get("/resturants/featured");
                 setRecommendations(res.data.data);
             } catch (error: any) {
                 toast.error(error?.response?.data?.message || error?.message);
@@ -56,7 +56,7 @@ export default function Dashboard() {
         }
 
         try {
-            await api.put(`/booking/${bookingId}`);
+            await api.put(`/bookings/${bookingId}/cancel`);
             setBookings((prev) => prev.map((b) => (b._id === bookingId) ? { ...b, status: "cancelled" } : b));
             toast.success("Reservation cancelled successfully.");
         } catch (error: any) {

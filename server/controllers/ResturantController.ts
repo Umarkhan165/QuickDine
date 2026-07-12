@@ -102,15 +102,10 @@ export const getResturantBySlug = async (req: Request, res: Response): Promise<v
                     const token = req.headers.authorization.split(" ")[1];
                     const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as unknown as { id: string };
                     const user = await User.findById(decodedToken.id);
-                    // if (user && (user.role === "admin" || (user.role === "owner" &&
-                    //     resturant.owner.toString() === user._id.toString()))) {
-                    //     isAuthorized = true;
-                    // }
-                } catch (error) {
-                    // Ignore token verify error
-                }
+                    // if (user && (user.role === "admin" || ...)) { isAuthorized = true; }  // commented out
+                } catch (error) {}
             }
-            if (isAuthorized) { //!isAuthorized
+            if (isAuthorized) { //!isAuthorized   // condition flipped, but isAuthorized is always false anyway, so this never fires
                 res.status(404).json({ message: "Resturant not found or not authorized to view" });
                 return;
             }
