@@ -32,8 +32,8 @@ export default function OwnerDashboard() {
             }
         }
         }
-        catch (error) {
-            toast.error(error?.response?.data?.message || "Failed to fetch data")
+        catch (error:any) {
+            toast.error(error || "Failed to fetch data")
         } finally {
             setLoading(false)
         }
